@@ -34,10 +34,10 @@ def perceptronStep(X, y, W, b, learn_rate = 0.01):
     return W, b
     
 def trainPerceptronAlgorithm(X, y, learn_rate = 0.01, num_epochs = 25):
-    x_min, x_max = min(X.T[0]), max(X.T[0])
-    y_min, y_max = min(X.T[1]), max(X.T[1])
+    # x_min, x_max = min(X.T[0]), max(X.T[0])
+    # y_min, y_max = min(X.T[1]), max(X.T[1])
     W = np.array(np.random.rand(2,1))
-    b = np.random.rand(1)[0] + x_max
+    b = np.random.rand(1)
     # These are the solution lines that get plotted below.
     boundary_lines = []
 
