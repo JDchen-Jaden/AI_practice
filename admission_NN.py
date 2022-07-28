@@ -11,15 +11,24 @@ def data_plot(data):
     plt.xlabel('GRE')
     plt.ylabel('GPA')
 
-def  trian_test_split(data,train_size):
-    y = data['admit']
-    x = data.drop('admit', axis = 1)
-    indices = np.random.permutation(y.shape[0])
-    train_indices = indices[:int(len(y)*train_size)]
-    test_indices = indices[int(len(y)*train_size):]
-    print(len(train_indices))
-    print(len(test_indices))
-    return x.iloc[train_indices],x.iloc[test_indices],y.iloc[train_indices],y.iloc[test_indices]
+# def  trian_test_split(data,train_size):
+#     y = data['admit']
+#     x = data.drop('admit', axis = 1)
+#     indices = np.random.permutation(y.shape[0])
+#     train_indices = indices[:int(len(y)*train_size)]
+#     test_indices = indices[int(len(y)*train_size):]
+#     print(len(train_indices))
+#     print(len(test_indices))
+#     return x.iloc[train_indices],x.iloc[test_indices],y.iloc[train_indices],y.iloc[test_indices]
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def sigmoid_prime(x):
+    return sigmoid(x) * (1-sigmoid(x))
+
+def cross_entropy(y, output):
+    return - y*np.log(output) - (1 - y) * np.log(1-output)
 
 # load and plot data
 data = pd.read_csv('student_data.csv')
@@ -63,13 +72,14 @@ processed_data = one_hot_data.copy()
 processed_data['gre'] = processed_data['gre']/800
 processed_data['gpa'] = processed_data['gpa']/4.0
 
-x_train,x_test,y_train,y_test = trian_test_split(data, 0.9)
-# sample = np.random.choice(processed_data.index, size=int(len(processed_data)*0.9), replace=False)
-# train_data, test_data = processed_data.iloc[sample], processed_data.drop(sample)
-# print(f'Length of trainning sample: {len(train_data)}')
-# print(f'Length of testing sample: {len(test_data)}')
-# # creat input and label
-# input = train_data.drop('admit', axis=1)
-# label = train_data['admit']
-# input_test = test_data.drop('admit', axis=1)
-# label_test = test_data['admit']
+# x_train,x_test,y_train,y_test = trian_test_split(data, 0.9)
+sample = np.random.choice(processed_data.index, size=int(len(processed_data)*0.9), replace=False)
+train_data, test_data = processed_data.iloc[sample], processed_data.drop(sample)
+print(f'Length of trainning sample: {len(train_data)}')
+print(f'Length of testing sample: {len(test_data)}')
+# creat input and label
+input = train_data.drop('admit', axis=1)
+label = train_data['admit']
+input_test = test_data.drop('admit', axis=1)
+label_test = test_data['admit']
+
