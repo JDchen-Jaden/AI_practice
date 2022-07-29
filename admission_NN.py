@@ -30,6 +30,26 @@ def sigmoid_prime(x):
 def cross_entropy(y, output):
     return - y*np.log(output) - (1 - y) * np.log(1-output)
 
+# dE/dW = -(y-y_hat)*activation_func_prime*x 
+# w = w + dE/dW
+# error term: delta = (y-y_hat)*activation_func_prime
+def error_term(x,y,y_hat):
+    return (y-y_hat)*sigmoid_prime(x)
+
+def train_nn(features, label, epochs, learnrate):
+    np.random.seed(42)
+    n_records, n_features = features.shape
+    # Initialize weights
+    weights = np.random.normal(scale=1 / n_features**.5, size=n_features)
+    del_w = np.zeros(weights.shape)
+    for i in range(epochs):
+        for x, y in zip(features.values, label):
+            y_hat = sigmoid(np.matmul(x,weights))
+            ce = cross_entropy(y,y_hat)
+            delta = error_term(x,y,y_hat)
+            del_w = delta*x
+        weights += learnrate*del_w/n_records
+    return weights
 # load and plot data
 data = pd.read_csv('student_data.csv')
 print(data.head(10))
@@ -83,3 +103,13 @@ label = train_data['admit']
 input_test = test_data.drop('admit', axis=1)
 label_test = test_data['admit']
 
+epochs = 1000
+learnrate = 0.5
+weights = train_nn(input, label, epochs, learnrate)
+
+# Calculate accuracy on test data
+test_out = sigmoid(np.dot(input_test, weights))
+print(test_out)
+predictions = test_out > 0.5
+accuracy = np.mean(predictions == label_test)
+print("Prediction accuracy: {:.3f}".format(accuracy))
